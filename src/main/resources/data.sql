@@ -18,9 +18,9 @@ INSERT INTO tags (name, description) VALUES
 
 -- 插入默认文章
 INSERT INTO articles (title, content, summary, author_id, category_id, is_published, published_at) VALUES 
-('Spring Boot入门', 'Spring Boot是一个开源的Java框架...', 'Spring Boot入门教程', 1, 1, TRUE, CURRENT_TIMESTAMP),
-('MySQL优化技巧', 'MySQL是世界上最流行的开源数据库之一...', 'MySQL性能优化指南', 1, 1, TRUE, CURRENT_TIMESTAMP),
-('我的旅行日记', '今天我去了一个美丽的地方...', '旅行日记分享', 2, 3, TRUE, CURRENT_TIMESTAMP);
+('Spring Boot入门', 'Spring Boot是一个开源的Java框架...', 'Spring Boot入门教程', 1, 1, 1, NOW()),
+('MySQL优化技巧', 'MySQL是世界上最流行的开源数据库之一...', 'MySQL性能优化指南', 1, 1, 1, NOW()),
+('我的旅行日记', '今天我去了一个美丽的地方...', '旅行日记分享', 2, 3, 1, NOW());
 
 -- 插入文章标签关联
 INSERT INTO article_tags (article_id, tag_id) VALUES 
