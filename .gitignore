@@ -1,0 +1,34 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# Environment
+.env
+
+# Certificate files
+*.jks
+
+# Maven Wrapper
+.mvn/wrapper/
+!**/mvnw
+!**/mvnw.cmd
+
+# Spring Boot
+HELP.md
+
+# Database
+*.h2.db
+*.mv.db
