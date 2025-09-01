@@ -15,14 +15,26 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 
+/**
+ * 文章管理控制器
+ * 提供文章的创建、获取、更新、删除等RESTful API接口
+ */
 @RestController
 @RequestMapping("/api/articles")
 @Tag(name = "文章管理", description = "文章管理相关接口")
 public class ArticleController {
     
+    /**
+     * 自动注入文章服务类
+     */
     @Autowired
     private ArticleService articleService;
     
+    /**
+     * 创建新文章
+     * @param articleDto 包含文章信息的数据传输对象，必须经过验证
+     * @return 创建成功的文章信息
+     */
     @PostMapping
     @Operation(summary = "创建文章", description = "创建新的文章")
     public ResponseEntity<ArticleDto> createArticle(@Valid @RequestBody ArticleDto articleDto) {
@@ -33,6 +45,11 @@ public class ArticleController {
         return ResponseEntity.ok(createdArticle);
     }
     
+    /**
+     * 根据文章ID获取文章详情
+     * @param id 文章的唯一标识符
+     * @return 对应ID的文章信息，如果不存在则返回404
+     */
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取文章", description = "根据文章ID获取文章详情")
     public ResponseEntity<ArticleDto> getArticleById(@PathVariable Long id) {
@@ -42,6 +59,12 @@ public class ArticleController {
                 .orElse(ResponseEntity.notFound().build());
     }
     
+    /**
+     * 更新指定ID的文章
+     * @param id 要更新的文章ID
+     * @param articleDto 包含更新信息的数据传输对象，必须经过验证
+     * @return 更新后的文章信息，如果文章不存在则返回404
+     */
     @PutMapping("/{id}")
     @Operation(summary = "更新文章", description = "更新指定ID的文章")
     public ResponseEntity<ArticleDto> updateArticle(@PathVariable Long id, @Valid @RequestBody ArticleDto articleDto) {
@@ -53,13 +76,25 @@ public class ArticleController {
         }
     }
     
+    /**
+     * 删除指定ID的文章
+     * @param id 要删除的文章ID
+     * @return 删除成功的响应
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除文章", description = "删除指定ID的文章")
+
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
         articleService.deleteArticle(id);
         return ResponseEntity.ok().build();
     }
     
+    /**
+     * 分页获取所有文章列表
+     * @param page 页码，从0开始，默认为0
+     * @param size 每页大小，默认为10
+     * @return 分页的文章列表
+     */
     @GetMapping
     @Operation(summary = "分页获取所有文章", description = "分页获取所有文章列表")
     public ResponseEntity<Page<ArticleDto>> getAllArticles(
@@ -70,6 +105,12 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
     
+    /**
+     * 分页获取已发布的文章列表
+     * @param page 页码，从0开始，默认为0
+     * @param size 每页大小，默认为10
+     * @return 分页的已发布文章列表
+     */
     @GetMapping("/published")
     @Operation(summary = "分页获取已发布的文章", description = "分页获取已发布的文章列表")
     public ResponseEntity<Page<ArticleDto>> getPublishedArticles(
@@ -80,6 +121,13 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
     
+    /**
+     * 根据作者ID分页获取文章列表
+     * @param authorId 作者的唯一标识符
+     * @param page 页码，从0开始，默认为0
+     * @param size 每页大小，默认为10
+     * @return 指定作者的分页文章列表
+     */
     @GetMapping("/author/{authorId}")
     @Operation(summary = "根据作者ID分页获取文章", description = "根据作者ID分页获取文章列表")
     public ResponseEntity<Page<ArticleDto>> getArticlesByAuthor(
@@ -91,6 +139,13 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
     
+    /**
+     * 根据分类ID分页获取文章列表
+     * @param categoryId 分类的唯一标识符
+     * @param page 页码，从0开始，默认为0
+     * @param size 每页大小，默认为10
+     * @return 指定分类的分页文章列表
+     */
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "根据分类ID分页获取文章", description = "根据分类ID分页获取文章列表")
     public ResponseEntity<Page<ArticleDto>> getArticlesByCategory(
@@ -102,6 +157,13 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
     
+    /**
+     * 根据标签ID分页获取文章列表
+     * @param tagId 标签的唯一标识符
+     * @param page 页码，从0开始，默认为0
+     * @param size 每页大小，默认为10
+     * @return 指定标签的分页文章列表
+     */
     @GetMapping("/tag/{tagId}")
     @Operation(summary = "根据标签ID分页获取文章", description = "根据标签ID分页获取文章列表")
     public ResponseEntity<Page<ArticleDto>> getArticlesByTag(
@@ -113,6 +175,12 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
     
+    /**
+     * 分页获取热门文章列表
+     * @param page 页码，从0开始，默认为0
+     * @param size 每页大小，默认为10
+     * @return 分页的热门文章列表
+     */
     @GetMapping("/popular")
     @Operation(summary = "分页获取热门文章", description = "分页获取热门文章列表")
     public ResponseEntity<Page<ArticleDto>> getPopularArticles(
@@ -123,6 +191,10 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
     
+    /**
+     * 获取热门文章前5名
+     * @return 热门文章列表（最多5篇）
+     */
     @GetMapping("/popular/top")
     @Operation(summary = "获取热门文章Top5", description = "获取热门文章前5名")
     public ResponseEntity<List<ArticleDto>> getTopPopularArticles() {

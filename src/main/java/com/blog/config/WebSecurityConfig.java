@@ -23,24 +23,40 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.Collections;
 
+/**
+ * Web安全配置类
+ * 配置Spring Security的安全策略，包括认证提供者、密码编码器、CORS配置和安全过滤器链。
+ * 启用Web安全和方法级别的权限控制。
+ */
 @Configuration
 @EnableWebSecurity
 // 开启方法级别的权限控制（如 @PreAuthorize("hasRole('ADMIN')")）
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
+    /** 自动注入用户详情服务，用于获取用户信息 */
     @Autowired
     private UserDetailsService userDetailsService;
 
+    /** 自动注入JWT认证入口点，用于处理未认证的请求 */
     @Autowired
     private JwtAuthEntryPoint unauthorizedHandler;
 
+    /**
+     * 创建JWT认证过滤器Bean
+     * @return JwtAuthTokenFilter实例
+     */
     // JWT 过滤器 Bean
     @Bean
     public JwtAuthTokenFilter authenticationJwtTokenFilter() {
         return new JwtAuthTokenFilter();
     }
 
+    /**
+     * 创建认证提供者Bean
+     * 关联UserDetailsService和密码编码器，用于用户认证
+     * @return AuthenticationProvider实例
+     */
     // 认证提供者（关联 UserDetailsService 和密码编码器）
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -50,18 +66,35 @@ public class WebSecurityConfig {
         return authProvider;
     }
 
+    /**
+     * 创建认证管理器Bean
+     * 用于手动触发认证
+     * @param authConfig 认证配置
+     * @return AuthenticationManager实例
+     * @throws Exception 认证管理器获取异常
+     */
     // 认证管理器（从配置中获取，用于手动触发认证）
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    /**
+     * 创建密码编码器Bean
+     * 使用BCrypt加密算法
+     * @return PasswordEncoder实例
+     */
     // 密码编码器（BCrypt 加密）
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * 创建CORS配置源Bean
+     * 解决跨域问题，开发环境允许所有源，生产环境需指定
+     * @return CorsConfigurationSource实例
+     */
     // 显式 CORS 配置，解决跨域问题
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -78,6 +111,13 @@ public class WebSecurityConfig {
         return source;
     }
 
+    /**
+     * 创建安全过滤器链Bean
+     * 配置接口权限、认证逻辑、CORS、CSRF、会话策略等安全策略
+     * @param http HttpSecurity对象
+     * @return SecurityFilterChain实例
+     * @throws Exception 安全过滤器链构建异常
+     */
     // 核心安全过滤器链（配置接口权限、认证逻辑）
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

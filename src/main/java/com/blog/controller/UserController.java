@@ -19,14 +19,24 @@ import java.util.Optional;
 import jakarta.validation.Valid;
 import java.util.List;
 
+/**
+ * 用户管理控制器
+ * 提供用户管理相关的RESTful API接口
+ */
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "用户管理接口", description = "用户管理相关接口")
 public class UserController {
     
+    /** 自动注入用户服务类 */
     @Autowired
     private UserService userService;
     
+    /**
+     * 创建新的用户
+     * @param userDto 包含用户信息的数据传输对象
+     * @return 创建结果的ResponseEntity对象
+     */
     @PostMapping
     @Operation(summary = "创建用户", description = "创建一个新的用户")
     public ResponseEntity<Object> createUser(
@@ -39,6 +49,11 @@ public class UserController {
         }
     }
     
+    /**
+     * 根据ID获取用户详细信息
+     * @param id 用户的唯一标识符
+     * @return 包含用户信息的ResponseEntity对象
+     */
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取用户", description = "根据用户ID获取用户详细信息")
     public ResponseEntity<Object> getUserById(
@@ -51,6 +66,12 @@ public class UserController {
         }
     }
     
+    /**
+     * 分页获取所有用户列表
+     * @param page 页码（从0开始）
+     * @param size 每页大小
+     * @return 包含用户列表的ResponseEntity对象
+     */
     @GetMapping
     @Operation(summary = "获取所有用户", description = "分页获取所有用户列表")
     public ResponseEntity<Object> getAllUsers(
@@ -65,6 +86,12 @@ public class UserController {
         }
     }
     
+    /**
+     * 根据用户ID更新用户信息
+     * @param id 要更新的用户ID
+     * @param userDto 包含更新信息的数据传输对象
+     * @return 更新结果的ResponseEntity对象
+     */
     @PutMapping("/{id}")
     @Operation(summary = "更新用户", description = "根据用户ID更新用户信息")
     public ResponseEntity<Object> updateUser(
@@ -78,6 +105,11 @@ public class UserController {
         }
     }
     
+    /**
+     * 根据用户ID删除用户
+     * @param id 要删除的用户ID
+     * @return 删除结果的ResponseEntity对象
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除用户", description = "根据用户ID删除用户")
     public ResponseEntity<Object> deleteUser(
@@ -91,6 +123,11 @@ public class UserController {
     }
     
     
+    /**
+     * 检查指定用户名是否已存在
+     * @param username 用户名
+     * @return 检查结果的ResponseEntity对象
+     */
     @GetMapping("/exists/username/{username}")
     @Operation(summary = "检查用户名是否存在", description = "检查指定用户名是否已存在")
     public ResponseEntity<Object> existsByUsername(
@@ -99,6 +136,11 @@ public class UserController {
         return ResponseUtil.buildSuccessResponse(exists);
     }
     
+    /**
+     * 检查指定邮箱是否已存在
+     * @param email 邮箱
+     * @return 检查结果的ResponseEntity对象
+     */
     @GetMapping("/exists/email/{email}")
     @Operation(summary = "检查邮箱是否存在", description = "检查指定邮箱是否已存在")
     public ResponseEntity<Object> existsByEmail(

@@ -15,14 +15,24 @@ import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 分类管理控制器
+ * 提供分类管理相关的RESTful API接口
+ */
 @RestController
 @RequestMapping("/api/categories")
 @Tag(name = "分类管理", description = "分类管理相关接口")
 public class CategoryController {
     
+    /** 自动注入分类服务类 */
     @Autowired
     private CategoryService categoryService;
     
+    /**
+     * 创建新的分类
+     * @param categoryDto 包含分类信息的数据传输对象
+     * @return 创建成功的分类信息
+     */
     @PostMapping
     @Operation(summary = "创建分类", description = "创建新的分类")
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
@@ -30,6 +40,11 @@ public class CategoryController {
         return ResponseEntity.ok(createdCategory);
     }
     
+    /**
+     * 根据ID获取分类详情
+     * @param id 分类的唯一标识符
+     * @return 包含分类信息的ResponseEntity对象
+     */
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取分类", description = "根据分类ID获取分类详情")
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
@@ -38,6 +53,12 @@ public class CategoryController {
                 .orElse(ResponseEntity.notFound().build());
     }
     
+    /**
+     * 更新指定ID的分类
+     * @param id 要更新的分类ID
+     * @param categoryDto 包含更新信息的数据传输对象
+     * @return 更新后的分类信息
+     */
     @PutMapping("/{id}")
     @Operation(summary = "更新分类", description = "更新指定ID的分类")
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryDto categoryDto) {
@@ -49,6 +70,11 @@ public class CategoryController {
         }
     }
     
+    /**
+     * 删除指定ID的分类
+     * @param id 要删除的分类ID
+     * @return 删除结果的ResponseEntity对象
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除分类", description = "删除指定ID的分类")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
@@ -56,6 +82,12 @@ public class CategoryController {
         return ResponseEntity.ok().build();
     }
     
+    /**
+     * 分页获取所有分类列表
+     * @param page 页码（从0开始）
+     * @param size 每页大小
+     * @return 分页的分类列表
+     */
     @GetMapping
     @Operation(summary = "分页获取分类列表", description = "分页获取所有分类列表")
     public ResponseEntity<Page<CategoryDto>> getAllCategories(
@@ -66,6 +98,11 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
     
+    /**
+     * 检查指定名称的分类是否存在
+     * @param name 分类名称
+     * @return 检查结果的ResponseEntity对象
+     */
     @GetMapping("/exists/{name}")
     @Operation(summary = "检查分类名称是否存在", description = "检查指定名称的分类是否存在")
     public ResponseEntity<Map<String, Boolean>> existsByName(@PathVariable String name) {

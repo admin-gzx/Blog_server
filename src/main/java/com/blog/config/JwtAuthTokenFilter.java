@@ -18,17 +18,24 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * JWT认证过滤器
+ * 用于拦截HTTP请求，验证JWT令牌并设置用户认证信息
+ */
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
+    /** 自动注入JWT工具类 */
     @Autowired
     private JwtUtils jwtUtils;
 
+    /** 自动注入用户详情服务类 */
     @Autowired
     private UserDetailsService userDetailsService;
 
+    /** 日志记录器 */
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
     
-    // 定义公开接口路径前缀
+    /** 定义公开接口路径前缀 */
     private static final List<String> PUBLIC_PATHS = List.of(
         "/api/auth/",
         "/api/test/",
@@ -41,6 +48,14 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         "/v3/api-docs"
     );
 
+    /**
+     * 过滤器核心方法，用于处理每个HTTP请求
+     * @param request HTTP请求对象
+     * @param response HTTP响应对象
+     * @param filterChain 过滤器链
+     * @throws ServletException Servlet异常
+     * @throws IOException IO异常
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -78,6 +93,11 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * 从HTTP请求中解析JWT令牌
+     * @param request HTTP请求对象
+     * @return JWT令牌字符串，如果不存在则返回null
+     */
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
 
