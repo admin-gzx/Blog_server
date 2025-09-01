@@ -9,6 +9,7 @@ import com.blog.repository.ArticleRepository;
 import com.blog.repository.CategoryRepository;
 import com.blog.repository.TagRepository;
 import com.blog.repository.UserRepository;
+import com.blog.exception.ResourceNotFoundException;
 import com.blog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -93,7 +94,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleDto updateArticle(Long id, ArticleDto articleDto) {
         // 查找要更新的文章
-        Article article = articleRepository.findById(id).orElseThrow(() -> new RuntimeException("Article not found"));
+        Article article = articleRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
         // 更新文章属性
         article.setTitle(articleDto.getTitle());
         article.setContent(articleDto.getContent());
@@ -148,7 +149,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Page<ArticleDto> getArticlesByAuthor(Long authorId, Pageable pageable) {
         // 查找作者
-        User author = userRepository.findById(authorId).orElseThrow(() -> new RuntimeException("User not found"));
+        User author = userRepository.findById(authorId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         // 获取指定作者的已发布文章并按创建时间倒序排列，转换为DTO分页对象
         return articleRepository.findByAuthorAndPublishedTrueOrderByCreateTimeDesc(author, pageable).map(this::convertToDto);
     }
@@ -162,7 +163,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Page<ArticleDto> getArticlesByCategory(Long categoryId, Pageable pageable) {
         // 查找分类
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         // 获取指定分类的已发布文章并按创建时间倒序排列，转换为DTO分页对象
         return articleRepository.findByCategoryAndPublishedTrueOrderByCreateTimeDesc(category, pageable).map(this::convertToDto);
     }
@@ -176,7 +177,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Page<ArticleDto> getArticlesByTag(Long tagId, Pageable pageable) {
         // 查找标签
-        Tag tag = tagRepository.findById(tagId).orElseThrow(() -> new RuntimeException("Tag not found"));
+        Tag tag = tagRepository.findById(tagId).orElseThrow(() -> new ResourceNotFoundException("Tag not found"));
         // 获取包含指定标签的已发布文章并按创建时间倒序排列，转换为DTO分页对象
         return articleRepository.findByTagsContainingAndPublishedTrueOrderByCreateTimeDesc(tag, pageable).map(this::convertToDto);
     }

@@ -37,8 +37,9 @@ public interface CategoryService {
      * @param id 要更新的分类ID
      * @param categoryDto 包含更新信息的数据传输对象
      * @return 更新后的分类信息
+     * @throws com.blog.exception.ResourceNotFoundException 如果分类不存在
      */
-    CategoryDto updateCategory(Long id, CategoryDto categoryDto);
+    CategoryDto updateCategory(Long id, CategoryDto categoryDto) throws com.blog.exception.ResourceNotFoundException;
     
     /**
      * 删除指定ID的分类

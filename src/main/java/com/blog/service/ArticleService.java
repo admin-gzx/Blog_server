@@ -33,8 +33,9 @@ public interface ArticleService {
      * @param id 要更新的文章ID
      * @param articleDto 包含更新信息的数据传输对象
      * @return 更新后的文章信息
+     * @throws com.blog.exception.ResourceNotFoundException 如果文章不存在
      */
-    ArticleDto updateArticle(Long id, ArticleDto articleDto);
+    ArticleDto updateArticle(Long id, ArticleDto articleDto) throws com.blog.exception.ResourceNotFoundException;
     
     /**
      * 删除指定ID的文章
@@ -61,24 +62,27 @@ public interface ArticleService {
      * @param authorId 作者的唯一标识符
      * @param pageable 分页信息
      * @return 指定作者的分页文章列表
+     * @throws com.blog.exception.ResourceNotFoundException 如果作者不存在
      */
-    Page<ArticleDto> getArticlesByAuthor(Long authorId, Pageable pageable);
+    Page<ArticleDto> getArticlesByAuthor(Long authorId, Pageable pageable) throws com.blog.exception.ResourceNotFoundException;
     
     /**
      * 根据分类ID分页获取文章
      * @param categoryId 分类的唯一标识符
      * @param pageable 分页信息
      * @return 指定分类的分页文章列表
+     * @throws com.blog.exception.ResourceNotFoundException 如果分类不存在
      */
-    Page<ArticleDto> getArticlesByCategory(Long categoryId, Pageable pageable);
+    Page<ArticleDto> getArticlesByCategory(Long categoryId, Pageable pageable) throws com.blog.exception.ResourceNotFoundException;
     
     /**
      * 根据标签ID分页获取文章
      * @param tagId 标签的唯一标识符
      * @param pageable 分页信息
      * @return 指定标签的分页文章列表
+     * @throws com.blog.exception.ResourceNotFoundException 如果标签不存在
      */
-    Page<ArticleDto> getArticlesByTag(Long tagId, Pageable pageable);
+    Page<ArticleDto> getArticlesByTag(Long tagId, Pageable pageable) throws com.blog.exception.ResourceNotFoundException;
     
     /**
      * 分页获取热门文章
@@ -96,6 +100,7 @@ public interface ArticleService {
     /**
      * 增加文章浏览量
      * @param id 文章的唯一标识符
+     * @throws com.blog.exception.ResourceNotFoundException 如果文章不存在
      */
-    void incrementViewCount(Long id);
+    void incrementViewCount(Long id) throws com.blog.exception.ResourceNotFoundException;
 }

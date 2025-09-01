@@ -39,8 +39,9 @@ public interface UserService {
      * @param id 要更新的用户ID
      * @param userDto 包含更新信息的数据传输对象
      * @return 更新后的用户信息
+     * @throws com.blog.exception.ResourceNotFoundException 如果用户不存在
      */
-    UserDto updateUser(Long id, UserDto userDto);
+    UserDto updateUser(Long id, UserDto userDto) throws com.blog.exception.ResourceNotFoundException;
     
     /**
      * 删除指定ID的用户

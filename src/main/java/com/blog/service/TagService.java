@@ -37,8 +37,9 @@ public interface TagService {
      * @param id 要更新的标签ID
      * @param tagDto 包含更新信息的数据传输对象
      * @return 更新后的标签信息
+     * @throws com.blog.exception.ResourceNotFoundException 如果标签不存在
      */
-    TagDto updateTag(Long id, TagDto tagDto);
+    TagDto updateTag(Long id, TagDto tagDto) throws com.blog.exception.ResourceNotFoundException;
     
     /**
      * 删除指定ID的标签

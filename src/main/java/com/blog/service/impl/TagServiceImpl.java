@@ -3,6 +3,7 @@ package com.blog.service.impl;
 import com.blog.dto.TagDto;
 import com.blog.entity.Tag;
 import com.blog.repository.TagRepository;
+import com.blog.exception.ResourceNotFoundException;
 import com.blog.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -71,7 +72,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagDto updateTag(Long id, TagDto tagDto) {
         // 根据ID查找标签，如果不存在则抛出异常
-        Tag tag = tagRepository.findById(id).orElseThrow(() -> new RuntimeException("Tag not found"));
+        Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tag not found"));
         tag.setName(tagDto.getName());
         tag.setDescription(tagDto.getDescription());
         

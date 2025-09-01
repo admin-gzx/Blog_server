@@ -3,6 +3,7 @@ package com.blog.service.impl;
 import com.blog.dto.CategoryDto;
 import com.blog.entity.Category;
 import com.blog.repository.CategoryRepository;
+import com.blog.exception.ResourceNotFoundException;
 import com.blog.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -71,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto updateCategory(Long id, CategoryDto categoryDto) {
         // 根据ID查找分类，如果不存在则抛出异常
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         category.setName(categoryDto.getName());
         category.setDescription(categoryDto.getDescription());
         

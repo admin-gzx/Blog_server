@@ -3,6 +3,7 @@ package com.blog.service.impl;
 import com.blog.dto.UserDto;
 import com.blog.entity.User;
 import com.blog.repository.UserRepository;
+import com.blog.exception.ResourceNotFoundException;
 import com.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -83,7 +84,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(Long id, UserDto userDto) {
         // 根据ID查找用户，如果不存在则抛出异常
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         // 更新用户昵称和头像
         user.setNickname(userDto.getNickname());
         user.setAvatar(userDto.getAvatar());
