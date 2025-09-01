@@ -5,7 +5,7 @@
 
 ## 技术栈
 - Java 11+
-- Spring Boot 2.7.x
+- Spring Boot 3.1.0
 - Spring Security
 - Spring Data JPA
 - MySQL 8.0
@@ -25,15 +25,17 @@ Blog_server/
 │   │   │           ├── BlogApplication.java
 │   │   │           ├── config/
 │   │   │           ├── controller/
+│   │   │           ├── dto/
 │   │   │           ├── entity/
+│   │   │           ├── exception/
 │   │   │           ├── repository/
 │   │   │           ├── service/
 │   │   │           │   └── impl/
-│   │   │           └── dto/
+│   │   │           └── util/
 │   │   └── resources/
 │   │       ├── application.yml
-│   │       ├── static/
-│   │       └── templates/
+│   │       ├── data.sql
+│   │       └── schema.sql
 │   └── test/
 │       └── java/
 │           └── com/
@@ -43,12 +45,21 @@ Blog_server/
 
 ## 功能模块
 1. 用户管理模块
+   - 用户注册与登录
+   - JWT Token认证
+   - 用户信息管理
 2. 文章管理模块
+   - 文章的增删改查
+   - 文章分类和标签
+   - 文章浏览量统计
 3. 分类管理模块
+   - 分类的增删改查
 4. 标签管理模块
+   - 标签的增删改查
+   - 文章与标签的多对多关联
 
 ## 接口文档
-项目集成了Swagger UI，启动后可通过`http://localhost:8080/swagger-ui.html`访问接口文档。
+项目集成了Swagger UI，启动后可通过`http://localhost:8080/swagger-ui/index.html`访问接口文档。
 
 ## 快速开始
 1. 克隆项目
