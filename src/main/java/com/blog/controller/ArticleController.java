@@ -3,6 +3,7 @@ package com.blog.controller;
 import com.blog.dto.ArticleDto;
 import com.blog.entity.User;
 import com.blog.service.ArticleService;
+import com.blog.config.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -39,8 +42,10 @@ public class ArticleController {
     @Operation(summary = "创建文章", description = "创建新的文章")
     public ResponseEntity<ArticleDto> createArticle(@Valid @RequestBody ArticleDto articleDto) {
         // 在实际应用中，需要从SecurityContext中获取当前用户
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User author = new User();
-        author.setId(1L); // 示例用户ID
+        author.setId(userDetails.getId()); // 使用当前登录用户的ID
         ArticleDto createdArticle = articleService.createArticle(articleDto, author);
         return ResponseEntity.ok(createdArticle);
     }
