@@ -95,7 +95,7 @@ public class WebSecurityConfig {
                         // 1. 业务相关公开接口（保持原有逻辑）
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
-                        .requestMatchers("/api/posts/**").permitAll()
+                        .requestMatchers("/api/articles/**").permitAll()
                         .requestMatchers("/api/categories/**").permitAll()
                         .requestMatchers("/api/tags/**").permitAll()
                         .requestMatchers("/api/users/public/**").permitAll()

@@ -38,3 +38,7 @@ jwt:
 
 server:
   port: 8080
+
+logging:
+  level:
+    com.blog.config.JwtAuthTokenFilter: DEBUG

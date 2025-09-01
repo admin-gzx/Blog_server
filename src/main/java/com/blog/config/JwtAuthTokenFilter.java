@@ -32,13 +32,13 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private static final List<String> PUBLIC_PATHS = List.of(
         "/api/auth/",
         "/api/test/",
-        "/api/posts/",
+        "/api/articles",  // 修改为与ArticleController中一致的前缀
         "/api/categories/",
         "/api/tags/",
         "/api/users/public/",
         "/api/comments/",
         "/swagger-ui/",
-        "/v3/api-docs/"
+        "/v3/api-docs"
     );
 
     @Override
@@ -48,8 +48,13 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         boolean isPublicPath = PUBLIC_PATHS.stream().anyMatch(requestURI::startsWith);
         
+        // 添加调试日志
+        logger.debug("Request URI: {}", requestURI);
+        logger.debug("Is public path: {}", isPublicPath);
+        
         // 如果是公开接口，直接放行
         if (isPublicPath) {
+            logger.debug("Public path accessed, skipping JWT validation");
             filterChain.doFilter(request, response);
             return;
         }

@@ -11,6 +11,7 @@
 
 常见的认证错误及解决方案：
 - `Full authentication is required to access this resource`: 检查请求是否包含有效的JWT令牌，或检查用户权限配置
+- 如果访问`/api/articles`接口返回401错误，请检查JwtAuthTokenFilter和WebSecurityConfig中的路径配置是否正确，确保`/api/articles`被正确配置为公开路径
 
 ## 技术栈
 - Java 11+
@@ -75,5 +76,5 @@ Blog_server/
 2. 配置数据库连接
 3. 运行`mvn spring-boot:run`启动项目
 
-## 项目文档
-详细的设计文档和接口说明请参考[项目文档](docs/PROJECT.md)。
+## API接口文档
+有关所有API接口的详细说明，请参考[API接口文档](docs/api.md)。
