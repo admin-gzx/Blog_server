@@ -3,6 +3,15 @@
 ## 项目概述
 这是一个使用Java开发的企业级博客系统后端项目，采用Spring Boot框架构建，实现了用户管理、文章管理等核心功能模块。
 
+## JWT认证
+项目使用JWT (JSON Web Token) 进行用户认证。如果遇到认证相关问题，请检查以下几点：
+1. 确保使用足够长的密钥（至少32个字符）
+2. 确保用户具有正确的权限集合
+3. 确保数据库中有有效的用户数据
+
+常见的认证错误及解决方案：
+- `Full authentication is required to access this resource`: 检查请求是否包含有效的JWT令牌，或检查用户权限配置
+
 ## 技术栈
 - Java 11+
 - Spring Boot 3.1.0

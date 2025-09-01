@@ -25,7 +25,7 @@ spring:
       matching-strategy: ant_path_matcher
 
 jwt:
-  secret: mySecretKey
+  secret: mySuperSecretKeyForJWTThatIsLongEnoughToBeSecure1234567890
   expiration: 86400
 
 server:
