@@ -1,8 +1,8 @@
 -- 插入默认用户 (密码为 'admin123' 的BCrypt加密结果)
 INSERT INTO users (username, email, password) VALUES 
-('admin', 'admin@example.com', '$2a$10$wQ8vIvq/JcsB86K.GiBSNe.W9.Dr/GsW3b4rk8oLWuH1bEWW/D91G'),
-('user1', 'user1@example.com', '$2a$10$wQ8vIvq/JcsB86K.GiBSNe.W9.Dr/GsW3b4rk8oLWuH1bEWW/D91G'),
-('user2', 'user2@example.com', '$2a$10$wQ8vIvq/JcsB86K.GiBSNe.W9.Dr/GsW3b4rk8oLWuH1bEWW/D91G');
+('admin', 'admin@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
+('user1', 'user1@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
+('user2', 'user2@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
 
 -- 插入默认分类
 INSERT INTO categories (name, description) VALUES 

@@ -1,5 +1,6 @@
 package com.blog.config;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
@@ -22,13 +24,36 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtils;
 
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsService userDetailsService;
 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
+    
+    // 定义公开接口路径前缀
+    private static final List<String> PUBLIC_PATHS = List.of(
+        "/api/auth/",
+        "/api/test/",
+        "/api/posts/",
+        "/api/categories/",
+        "/api/tags/",
+        "/api/users/public/",
+        "/api/comments/",
+        "/swagger-ui/",
+        "/v3/api-docs/"
+    );
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        // 检查请求路径是否为公开接口
+        String requestURI = request.getRequestURI();
+        boolean isPublicPath = PUBLIC_PATHS.stream().anyMatch(requestURI::startsWith);
+        
+        // 如果是公开接口，直接放行
+        if (isPublicPath) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {

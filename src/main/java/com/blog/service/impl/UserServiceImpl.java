@@ -7,8 +7,10 @@ import com.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,6 +76,8 @@ public class UserServiceImpl implements UserService {
     public Boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+    
+
     
     private UserDto convertToDto(User user) {
         UserDto userDto = new UserDto();

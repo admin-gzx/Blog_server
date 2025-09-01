@@ -36,5 +36,6 @@ D:\github项目\Blog_server\src\main\java\com\blog\BlogApplication.java
 D:\github项目\Blog_server\src\main\java\com\blog\repository\UserRepository.java
 D:\github项目\Blog_server\src\main\java\com\blog\entity\Category.java
 D:\github项目\Blog_server\src\main\java\com\blog\config\JwtAuthEntryPoint.java
+D:\github项目\Blog_server\src\main\java\com\blog\service\impl\UserDetailsImpl.java
 D:\github项目\Blog_server\src\main\java\com\blog\entity\User.java
 D:\github项目\Blog_server\src\main\java\com\blog\controller\TestController.java
