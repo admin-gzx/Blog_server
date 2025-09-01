@@ -4,6 +4,7 @@ import com.blog.dto.ArticleDto;
 import com.blog.entity.User;
 import com.blog.service.ArticleService;
 import com.blog.config.UserDetailsImpl;
+import com.blog.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,18 +47,23 @@ public class ArticleController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User author = new User();
         author.setId(userDetails.getId()); // 使用当前登录用户的ID
-        ArticleDto createdArticle = articleService.createArticle(articleDto, author);
-        return ResponseEntity.ok(createdArticle);
+        try {
+            ArticleDto createdArticle = articleService.createArticle(articleDto, author);
+            return ResponseEntity.ok(createdArticle);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
     
     /**
      * 根据文章ID获取文章详情
      * @param id 文章的唯一标识符
      * @return 对应ID的文章信息，如果不存在则返回404
+     * @throws com.blog.exception.ResourceNotFoundException 如果文章不存在
      */
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取文章", description = "根据文章ID获取文章详情")
-    public ResponseEntity<ArticleDto> getArticleById(@PathVariable Long id) {
+    public ResponseEntity<ArticleDto> getArticleById(@PathVariable Long id) throws com.blog.exception.ResourceNotFoundException {
         articleService.incrementViewCount(id); // 增加浏览量
         return articleService.getArticleById(id)
                 .map(ResponseEntity::ok)
@@ -69,10 +75,11 @@ public class ArticleController {
      * @param id 要更新的文章ID
      * @param articleDto 包含更新信息的数据传输对象，必须经过验证
      * @return 更新后的文章信息，如果文章不存在则返回404
+     * @throws com.blog.exception.ResourceNotFoundException 如果文章不存在
      */
     @PutMapping("/{id}")
     @Operation(summary = "更新文章", description = "更新指定ID的文章")
-    public ResponseEntity<ArticleDto> updateArticle(@PathVariable Long id, @Valid @RequestBody ArticleDto articleDto) {
+    public ResponseEntity<ArticleDto> updateArticle(@PathVariable Long id, @Valid @RequestBody ArticleDto articleDto) throws com.blog.exception.ResourceNotFoundException {
         try {
             ArticleDto updatedArticle = articleService.updateArticle(id, articleDto);
             return ResponseEntity.ok(updatedArticle);
@@ -85,11 +92,12 @@ public class ArticleController {
      * 删除指定ID的文章
      * @param id 要删除的文章ID
      * @return 删除成功的响应
+     * @throws com.blog.exception.ResourceNotFoundException 如果文章不存在
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除文章", description = "删除指定ID的文章")
 
-    public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteArticle(@PathVariable Long id) throws com.blog.exception.ResourceNotFoundException {
         articleService.deleteArticle(id);
         return ResponseEntity.ok().build();
     }
@@ -132,13 +140,14 @@ public class ArticleController {
      * @param page 页码，从0开始，默认为0
      * @param size 每页大小，默认为10
      * @return 指定作者的分页文章列表
+     * @throws com.blog.exception.ResourceNotFoundException 如果作者不存在
      */
     @GetMapping("/author/{authorId}")
     @Operation(summary = "根据作者ID分页获取文章", description = "根据作者ID分页获取文章列表")
     public ResponseEntity<Page<ArticleDto>> getArticlesByAuthor(
             @PathVariable Long authorId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size) throws com.blog.exception.ResourceNotFoundException {
         Pageable pageable = PageRequest.of(page, size);
         Page<ArticleDto> articles = articleService.getArticlesByAuthor(authorId, pageable);
         return ResponseEntity.ok(articles);
@@ -150,13 +159,14 @@ public class ArticleController {
      * @param page 页码，从0开始，默认为0
      * @param size 每页大小，默认为10
      * @return 指定分类的分页文章列表
+     * @throws com.blog.exception.ResourceNotFoundException 如果分类不存在
      */
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "根据分类ID分页获取文章", description = "根据分类ID分页获取文章列表")
     public ResponseEntity<Page<ArticleDto>> getArticlesByCategory(
             @PathVariable Long categoryId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size) throws com.blog.exception.ResourceNotFoundException {
         Pageable pageable = PageRequest.of(page, size);
         Page<ArticleDto> articles = articleService.getArticlesByCategory(categoryId, pageable);
         return ResponseEntity.ok(articles);
@@ -168,13 +178,14 @@ public class ArticleController {
      * @param page 页码，从0开始，默认为0
      * @param size 每页大小，默认为10
      * @return 指定标签的分页文章列表
+     * @throws com.blog.exception.ResourceNotFoundException 如果标签不存在
      */
     @GetMapping("/tag/{tagId}")
     @Operation(summary = "根据标签ID分页获取文章", description = "根据标签ID分页获取文章列表")
     public ResponseEntity<Page<ArticleDto>> getArticlesByTag(
             @PathVariable Long tagId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size) throws com.blog.exception.ResourceNotFoundException {
         Pageable pageable = PageRequest.of(page, size);
         Page<ArticleDto> articles = articleService.getArticlesByTag(tagId, pageable);
         return ResponseEntity.ok(articles);

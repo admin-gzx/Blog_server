@@ -1,21 +1,26 @@
 package com.blog.service.impl;
 
 import com.blog.dto.ArticleDto;
+import com.blog.dto.UserDto;
+import com.blog.dto.CategoryDto;
+import com.blog.dto.TagDto;
 import com.blog.entity.Article;
+import com.blog.entity.User;
 import com.blog.entity.Category;
 import com.blog.entity.Tag;
-import com.blog.entity.User;
+import com.blog.exception.ResourceNotFoundException;
 import com.blog.repository.ArticleRepository;
+import com.blog.repository.UserRepository;
 import com.blog.repository.CategoryRepository;
 import com.blog.repository.TagRepository;
-import com.blog.repository.UserRepository;
-import com.blog.exception.ResourceNotFoundException;
 import com.blog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,9 +61,10 @@ public class ArticleServiceImpl implements ArticleService {
      * @param articleDto 包含文章信息的数据传输对象
      * @param author 文章作者
      * @return 创建成功的文章信息
+     * @throws com.blog.exception.ResourceNotFoundException 如果分类或标签不存在
      */
     @Override
-    public ArticleDto createArticle(ArticleDto articleDto, User author) {
+    public ArticleDto createArticle(ArticleDto articleDto, User author) throws com.blog.exception.ResourceNotFoundException {
         // 创建文章实体对象并设置属性
         Article article = new Article();
         article.setTitle(articleDto.getTitle());
@@ -67,6 +73,30 @@ public class ArticleServiceImpl implements ArticleService {
         article.setCoverImage(articleDto.getCoverImage());
         article.setPublished(articleDto.getPublished());
         article.setAuthor(author);
+        
+        // 处理分类关联
+        if (articleDto.getCategory() != null && articleDto.getCategory().getId() != null) {
+            Category category = categoryRepository.findById(articleDto.getCategory().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + articleDto.getCategory().getId()));
+            article.setCategory(category);
+        }
+        
+        // 处理标签关联
+        if (articleDto.getTags() != null && !articleDto.getTags().isEmpty()) {
+            List<Tag> tags = new ArrayList<>();
+            for (TagDto tagDto : articleDto.getTags()) {
+                if (tagDto.getId() != null) {
+                    try {
+                        Tag tag = tagRepository.findById(tagDto.getId())
+                                .orElseThrow(() -> new ResourceNotFoundException("Tag not found with id: " + tagDto.getId()));
+                        tags.add(tag);
+                    } catch (ResourceNotFoundException e) {
+                        throw e; // 重新抛出异常
+                    }
+                }
+            }
+            article.setTags(tags);
+        }
         
         // 保存文章到数据库
         Article savedArticle = articleRepository.save(article);
@@ -90,9 +120,10 @@ public class ArticleServiceImpl implements ArticleService {
      * @param id 要更新的文章ID
      * @param articleDto 包含更新信息的数据传输对象
      * @return 更新后的文章信息
+     * @throws com.blog.exception.ResourceNotFoundException 如果文章、分类或标签不存在
      */
     @Override
-    public ArticleDto updateArticle(Long id, ArticleDto articleDto) {
+    public ArticleDto updateArticle(Long id, ArticleDto articleDto) throws com.blog.exception.ResourceNotFoundException {
         // 查找要更新的文章
         Article article = articleRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
         // 更新文章属性
@@ -101,6 +132,34 @@ public class ArticleServiceImpl implements ArticleService {
         article.setSummary(articleDto.getSummary());
         article.setCoverImage(articleDto.getCoverImage());
         article.setPublished(articleDto.getPublished());
+        
+        // 处理分类关联
+        if (articleDto.getCategory() != null && articleDto.getCategory().getId() != null) {
+            Category category = categoryRepository.findById(articleDto.getCategory().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+            article.setCategory(category);
+        } else {
+            article.setCategory(null);
+        }
+        
+        // 处理标签关联
+        if (articleDto.getTags() != null && !articleDto.getTags().isEmpty()) {
+            List<Tag> tags = new ArrayList<>();
+            for (TagDto tagDto : articleDto.getTags()) {
+                if (tagDto.getId() != null) {
+                    try {
+                        Tag tag = tagRepository.findById(tagDto.getId())
+                                .orElseThrow(() -> new ResourceNotFoundException("Tag not found with id: " + tagDto.getId()));
+                        tags.add(tag);
+                    } catch (ResourceNotFoundException e) {
+                        throw e; // 重新抛出异常
+                    }
+                }
+            }
+            article.setTags(tags);
+        } else {
+            article.setTags(null);
+        }
         
         // 保存更新后的文章
         Article updatedArticle = articleRepository.save(article);
@@ -145,9 +204,10 @@ public class ArticleServiceImpl implements ArticleService {
      * @param authorId 作者的唯一标识符
      * @param pageable 分页信息
      * @return 指定作者的分页文章列表
+     * @throws com.blog.exception.ResourceNotFoundException 如果作者不存在
      */
     @Override
-    public Page<ArticleDto> getArticlesByAuthor(Long authorId, Pageable pageable) {
+    public Page<ArticleDto> getArticlesByAuthor(Long authorId, Pageable pageable) throws com.blog.exception.ResourceNotFoundException {
         // 查找作者
         User author = userRepository.findById(authorId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         // 获取指定作者的已发布文章并按创建时间倒序排列，转换为DTO分页对象
@@ -159,9 +219,10 @@ public class ArticleServiceImpl implements ArticleService {
      * @param categoryId 分类的唯一标识符
      * @param pageable 分页信息
      * @return 指定分类的分页文章列表
+     * @throws com.blog.exception.ResourceNotFoundException 如果分类不存在
      */
     @Override
-    public Page<ArticleDto> getArticlesByCategory(Long categoryId, Pageable pageable) {
+    public Page<ArticleDto> getArticlesByCategory(Long categoryId, Pageable pageable) throws com.blog.exception.ResourceNotFoundException {
         // 查找分类
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         // 获取指定分类的已发布文章并按创建时间倒序排列，转换为DTO分页对象
@@ -173,9 +234,10 @@ public class ArticleServiceImpl implements ArticleService {
      * @param tagId 标签的唯一标识符
      * @param pageable 分页信息
      * @return 指定标签的分页文章列表
+     * @throws com.blog.exception.ResourceNotFoundException 如果标签不存在
      */
     @Override
-    public Page<ArticleDto> getArticlesByTag(Long tagId, Pageable pageable) {
+    public Page<ArticleDto> getArticlesByTag(Long tagId, Pageable pageable) throws com.blog.exception.ResourceNotFoundException {
         // 查找标签
         Tag tag = tagRepository.findById(tagId).orElseThrow(() -> new ResourceNotFoundException("Tag not found"));
         // 获取包含指定标签的已发布文章并按创建时间倒序排列，转换为DTO分页对象
@@ -209,11 +271,12 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 增加文章浏览量
      * @param id 文章的唯一标识符
+     * @throws com.blog.exception.ResourceNotFoundException 如果文章不存在
      */
     @Override
-    public void incrementViewCount(Long id) {
+    public void incrementViewCount(Long id) throws com.blog.exception.ResourceNotFoundException {
         // 查找文章
-        Article article = articleRepository.findById(id).orElseThrow(() -> new RuntimeException("Article not found"));
+        Article article = articleRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
         // 增加浏览量
         article.setViewCount(article.getViewCount() + 1);
         // 保存更新后的文章
@@ -242,6 +305,27 @@ public class ArticleServiceImpl implements ArticleService {
         if (article.getAuthor() != null) {
             User author = article.getAuthor();
             articleDto.setAuthor(convertUserToDto(author));
+        }
+        
+        // 转换分类信息
+        if (article.getCategory() != null) {
+            Category category = article.getCategory();
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setId(category.getId());
+            categoryDto.setName(category.getName());
+            categoryDto.setDescription(category.getDescription());
+            articleDto.setCategory(categoryDto);
+        }
+        
+        // 转换标签信息
+        if (article.getTags() != null) {
+            List<TagDto> tagDtos = article.getTags().stream().map(tag -> {
+                TagDto tagDto = new TagDto();
+                tagDto.setId(tag.getId());
+                tagDto.setName(tag.getName());
+                return tagDto;
+            }).collect(Collectors.toList());
+            articleDto.setTags(tagDtos);
         }
         
         return articleDto;

@@ -80,9 +80,10 @@ public class UserServiceImpl implements UserService {
      * @param id 要更新的用户ID
      * @param userDto 包含更新信息的数据传输对象
      * @return 更新后的用户信息
+     * @throws ResourceNotFoundException 如果用户不存在
      */
     @Override
-    public UserDto updateUser(Long id, UserDto userDto) {
+    public UserDto updateUser(Long id, UserDto userDto) throws ResourceNotFoundException {
         // 根据ID查找用户，如果不存在则抛出异常
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         // 更新用户昵称和头像

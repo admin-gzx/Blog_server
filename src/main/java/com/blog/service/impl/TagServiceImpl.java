@@ -68,9 +68,10 @@ public class TagServiceImpl implements TagService {
      * @param id 要更新的标签ID
      * @param tagDto 包含更新信息的数据传输对象
      * @return 更新后的标签信息
+     * @throws ResourceNotFoundException 如果标签不存在
      */
     @Override
-    public TagDto updateTag(Long id, TagDto tagDto) {
+    public TagDto updateTag(Long id, TagDto tagDto) throws ResourceNotFoundException {
         // 根据ID查找标签，如果不存在则抛出异常
         Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tag not found"));
         tag.setName(tagDto.getName());

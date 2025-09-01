@@ -58,10 +58,11 @@ public class TagController {
      * @param id 要更新的标签ID
      * @param tagDto 包含更新信息的数据传输对象
      * @return 更新后的标签信息
+     * @throws com.blog.exception.ResourceNotFoundException 如果标签不存在
      */
     @PutMapping("/{id}")
     @Operation(summary = "更新标签", description = "更新指定ID的标签")
-    public ResponseEntity<TagDto> updateTag(@PathVariable Long id, @Valid @RequestBody TagDto tagDto) {
+    public ResponseEntity<TagDto> updateTag(@PathVariable Long id, @Valid @RequestBody TagDto tagDto) throws com.blog.exception.ResourceNotFoundException {
         try {
             TagDto updatedTag = tagService.updateTag(id, tagDto);
             return ResponseEntity.ok(updatedTag);

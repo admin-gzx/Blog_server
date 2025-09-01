@@ -58,10 +58,11 @@ public class CategoryController {
      * @param id 要更新的分类ID
      * @param categoryDto 包含更新信息的数据传输对象
      * @return 更新后的分类信息
+     * @throws com.blog.exception.ResourceNotFoundException 如果分类不存在
      */
     @PutMapping("/{id}")
     @Operation(summary = "更新分类", description = "更新指定ID的分类")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryDto categoryDto) throws com.blog.exception.ResourceNotFoundException {
         try {
             CategoryDto updatedCategory = categoryService.updateCategory(id, categoryDto);
             return ResponseEntity.ok(updatedCategory);

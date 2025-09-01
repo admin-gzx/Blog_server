@@ -18,8 +18,9 @@ public interface ArticleService {
      * @param articleDto 包含文章信息的数据传输对象
      * @param author 文章作者
      * @return 创建成功的文章信息
+     * @throws com.blog.exception.ResourceNotFoundException 如果分类或标签不存在
      */
-    ArticleDto createArticle(ArticleDto articleDto, User author);
+    ArticleDto createArticle(ArticleDto articleDto, User author) throws com.blog.exception.ResourceNotFoundException;
     
     /**
      * 根据ID获取文章
