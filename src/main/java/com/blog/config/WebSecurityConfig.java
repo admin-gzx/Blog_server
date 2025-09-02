@@ -142,8 +142,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/comments/**").permitAll()
                         // 2. SpringDoc OpenAPI 文档路径（必须放行）
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
-                        // 3. 其他所有接口必须认证
-                        .anyRequest().authenticated()
+                        // 3. 其他所有接口也允许访问（用于Swagger测试）
+                        .anyRequest().permitAll()
                 )
                 // 注册认证提供者（使用 DaoAuthenticationProvider）
                 .authenticationProvider(authenticationProvider())
