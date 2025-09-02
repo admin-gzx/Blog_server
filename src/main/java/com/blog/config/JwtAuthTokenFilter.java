@@ -45,28 +45,10 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        // 检查请求路径是否为公开接口
-        String requestURI = request.getRequestURI();
-        
         // 添加调试日志
-        logger.debug("Request URI: {}", requestURI);
+        logger.debug("Request URI: {}", request.getRequestURI());
         
-        // 跳过公开接口的JWT验证
-        if (requestURI.startsWith("/api/auth/") || 
-            requestURI.startsWith("/api/test/") || 
-            requestURI.startsWith("/api/articles/") || 
-            requestURI.startsWith("/api/categories/") || 
-            requestURI.startsWith("/api/tags/") || 
-            requestURI.startsWith("/api/users/public/") || 
-            requestURI.startsWith("/api/comments/") || 
-            requestURI.startsWith("/swagger-ui/") || 
-            requestURI.equals("/swagger-ui.html") || 
-            requestURI.startsWith("/v3/api-docs/")) {
-            // 直接放行，不进行JWT验证
-            filterChain.doFilter(request, response);
-            return;
-        }
-        
+        // 由于WebSecurityConfig已经配置了公开接口，这里只需要处理需要认证的请求
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
