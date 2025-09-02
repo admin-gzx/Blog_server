@@ -18,7 +18,6 @@ com\blog\config\DataSourceConfig.class
 com\blog\service\impl\CategoryServiceImpl.class
 com\blog\exception\GlobalExceptionHandler.class
 com\blog\entity\Category.class
-com\blog\service\impl\UserDetailsImpl.class
 com\blog\config\JwtUtils.class
 com\blog\service\impl\ArticleServiceImpl.class
 com\blog\util\ResponseUtil.class

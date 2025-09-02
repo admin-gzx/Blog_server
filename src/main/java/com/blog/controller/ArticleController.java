@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,9 +42,14 @@ public class ArticleController {
      */
     @PostMapping
     @Operation(summary = "创建文章", description = "创建新的文章")
-    public ResponseEntity<ArticleDto> createArticle(@Valid @RequestBody ArticleDto articleDto) {
-        // 在实际应用中，需要从SecurityContext中获取当前用户
+    public ResponseEntity<?> createArticle(@Valid @RequestBody ArticleDto articleDto) {
+        // 检查用户是否已认证
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("用户未认证");
+        }
+        
+        // 在实际应用中，需要从SecurityContext中获取当前用户
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User author = new User();
         author.setId(userDetails.getId()); // 使用当前登录用户的ID
