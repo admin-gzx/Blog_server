@@ -51,8 +51,21 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         // 添加调试日志
         logger.debug("Request URI: {}", requestURI);
         
-        // 让Spring Security处理路径权限，这里只处理需要认证的请求
-        // 如果是公开接口，Spring Security会直接放行，不会执行到这里
+        // 跳过公开接口的JWT验证
+        if (requestURI.startsWith("/api/auth/") || 
+            requestURI.startsWith("/api/test/") || 
+            requestURI.startsWith("/api/articles/") || 
+            requestURI.startsWith("/api/categories/") || 
+            requestURI.startsWith("/api/tags/") || 
+            requestURI.startsWith("/api/users/public/") || 
+            requestURI.startsWith("/api/comments/") || 
+            requestURI.startsWith("/swagger-ui/") || 
+            requestURI.equals("/swagger-ui.html") || 
+            requestURI.startsWith("/v3/api-docs/")) {
+            // 直接放行，不进行JWT验证
+            filterChain.doFilter(request, response);
+            return;
+        }
         
         try {
             String jwt = parseJwt(request);
