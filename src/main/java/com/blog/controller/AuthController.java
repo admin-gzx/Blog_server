@@ -7,6 +7,7 @@ import com.blog.entity.User;
 import com.blog.service.UserService;
 import com.blog.config.JwtUtils;
 import com.blog.config.UserDetailsImpl;
+import com.blog.util.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -63,23 +65,28 @@ public class AuthController {
     @PostMapping("/signin")
     @Operation(summary = "用户登录", description = "用户登录接口")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        // 使用用户名和密码进行身份验证
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        
-        // 将认证信息存储到安全上下文中
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        // 生成JWT令牌
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        
-        // 获取认证用户详细信息
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        
-        // 返回JWT响应对象
-        return ResponseEntity.ok(new JwtResponse(jwt, 
+        try {
+            // 使用用户名和密码进行身份验证
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            
+            // 将认证信息存储到安全上下文中
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            // 生成JWT令牌
+            String jwt = jwtUtils.generateJwtToken(authentication);
+            
+            // 获取认证用户详细信息
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            
+            // 返回JWT响应对象
+        return ResponseUtil.buildSuccessResponse(new JwtResponse(jwt, 
                 userDetails.getId(), 
                 userDetails.getUsername(), 
                 userDetails.getEmail()));
+        } catch (AuthenticationException e) {
+            // 认证失败，返回401状态码和错误信息
+            return ResponseUtil.buildErrorResponse("用户名或密码错误");
+        }
     }
     
     /**
@@ -92,16 +99,12 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDto userDto) {
         // 检查用户名是否已被使用
         if (userService.existsByUsername(userDto.getUsername())) {
-            Map<String, String> error = new HashMap<>();
-            error.put("message", "用户名已被使用");
-            return ResponseEntity.badRequest().body(error);
+            return ResponseUtil.buildErrorResponse("用户名已被使用");
         }
         
         // 检查邮箱是否已被使用
         if (userService.existsByEmail(userDto.getEmail())) {
-            Map<String, String> error = new HashMap<>();
-            error.put("message", "邮箱已被使用");
-            return ResponseEntity.badRequest().body(error);
+            return ResponseUtil.buildErrorResponse("邮箱已被使用");
         }
         
         // 创建新用户
@@ -110,8 +113,6 @@ public class AuthController {
         UserDto newUser = userService.createUser(userDto);
         
         // 返回注册成功信息
-        Map<String, String> success = new HashMap<>();
-        success.put("message", "用户注册成功");
-        return ResponseEntity.ok(success);
+        return ResponseUtil.buildSuccessResponse("用户注册成功");
     }
 }
