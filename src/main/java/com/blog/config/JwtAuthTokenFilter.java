@@ -39,7 +39,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private static final List<String> PUBLIC_PATHS = List.of(
         "/api/auth/",
         "/api/test/",
-        "/api/articles",  // 修改为与ArticleController中一致的前缀
+        "/api/articles/",  // 修改为与ArticleController中一致的前缀
         "/api/categories/",
         "/api/tags/",
         "/api/users/public/",
@@ -61,10 +61,21 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         // 检查请求路径是否为公开接口
         String requestURI = request.getRequestURI();
-        boolean isPublicPath = PUBLIC_PATHS.stream().anyMatch(requestURI::startsWith);
+        String method = request.getMethod();
+        
+        // 特殊处理文章接口，GET请求公开，POST请求需要认证
+        boolean isPublicPath = false;
+        if (requestURI.startsWith("/api/articles/")) {
+            // 对于文章接口，只有GET请求是公开的
+            isPublicPath = "GET".equals(method);
+        } else {
+            // 其他接口按原有逻辑处理
+            isPublicPath = PUBLIC_PATHS.stream().anyMatch(requestURI::startsWith);
+        }
         
         // 添加调试日志
         logger.debug("Request URI: {}", requestURI);
+        logger.debug("Request Method: {}", method);
         logger.debug("Is public path: {}", isPublicPath);
         
         // 如果是公开接口，直接放行

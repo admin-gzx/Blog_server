@@ -61,7 +61,6 @@
 | 接口描述 | 请求方式 | 请求路径 | 请求参数 | 响应内容 |
 |---------|---------|---------|---------|---------|
 | 创建文章 | POST | /api/articles | ArticleDto对象 | ArticleDto对象 |
-| 根据ID获取文章 | GET | /api/articles/{id} | 文章ID | ArticleDto对象 |
 | 更新文章 | PUT | /api/articles/{id} | 文章ID, ArticleDto对象 | ArticleDto对象 |
 | 删除文章 | DELETE | /api/articles/{id} | 文章ID | 操作结果 |
 | 分页获取所有文章 | GET | /api/articles | 分页参数 | 文章列表 |
@@ -86,34 +85,6 @@
   "published": true
 }
 ```
-- 响应示例:
-```json
-{
-  "id": 1,
-  "title": "Spring Boot入门教程",
-  "content": "Spring Boot是一个开源的Java框架...",
-  "summary": "Spring Boot入门教程摘要",
-  "coverImage": "https://example.com/image.jpg",
-  "published": true,
-  "viewCount": 0,
-  "likeCount": 0,
-  "createTime": "2023-05-01T12:00:00",
-  "updateTime": "2023-05-01T12:00:00",
-  "author": {
-    "id": 1,
-    "username": "author1",
-    "email": "author1@example.com",
-    "nickname": "作者1",
-    "avatar": null,
-    "enabled": true,
-    "createTime": "2023-05-01T12:00:00",
-    "updateTime": "2023-05-01T12:00:00"
-  }
-}
-```
-
-**根据ID获取文章**
-- 请求URL: `GET /api/articles/{id}`
 - 响应示例:
 ```json
 {
@@ -192,210 +163,33 @@
 - 请求URL: `GET /api/articles?page=0&size=10`
 - 响应示例:
 ```json
-[
-  {
-    "id": 1,
-    "title": "Spring Boot入门教程",
-    "content": "Spring Boot是一个开源的Java框架...",
-    "summary": "Spring Boot入门教程摘要",
-    "coverImage": "https://example.com/image.jpg",
-    "published": true,
-    "viewCount": 0,
-    "likeCount": 0,
-    "createTime": "2023-05-01T12:00:00",
-    "updateTime": "2023-05-01T12:00:00",
-    "author": {
+{
+  "success": true,
+  "data": [
+    {
       "id": 1,
-      "username": "author1",
-      "email": "author1@example.com",
-      "nickname": "作者1",
-      "avatar": null,
-      "enabled": true,
+      "title": "Spring Boot入门教程",
+      "content": "Spring Boot是一个开源的Java框架...",
+      "summary": "Spring Boot入门教程摘要",
+      "coverImage": "https://example.com/image.jpg",
+      "published": true,
+      "viewCount": 0,
+      "likeCount": 0,
       "createTime": "2023-05-01T12:00:00",
-      "updateTime": "2023-05-01T12:00:00"
+      "updateTime": "2023-05-01T12:00:00",
+      "author": {
+        "id": 1,
+        "username": "author1",
+        "email": "author1@example.com",
+        "nickname": "作者1",
+        "avatar": null,
+        "enabled": true,
+        "createTime": "2023-05-01T12:00:00",
+        "updateTime": "2023-05-01T12:00:00"
+      }
     }
-  }
-]
-```
-
-**分页获取已发布的文章**
-- 请求URL: `GET /api/articles/published?page=0&size=10`
-- 响应示例:
-```json
-[
-  {
-    "id": 1,
-    "title": "Spring Boot入门教程",
-    "content": "Spring Boot是一个开源的Java框架...",
-    "summary": "Spring Boot入门教程摘要",
-    "coverImage": "https://example.com/image.jpg",
-    "published": true,
-    "viewCount": 0,
-    "likeCount": 0,
-    "createTime": "2023-05-01T12:00:00",
-    "updateTime": "2023-05-01T12:00:00",
-    "author": {
-      "id": 1,
-      "username": "author1",
-      "email": "author1@example.com",
-      "nickname": "作者1",
-      "avatar": null,
-      "enabled": true,
-      "createTime": "2023-05-01T12:00:00",
-      "updateTime": "2023-05-01T12:00:00"
-    }
-  }
-]
-```
-
-**根据作者ID分页获取文章**
-- 请求URL: `GET /api/articles/author/{authorId}?page=0&size=10`
-- 响应示例:
-```json
-[
-  {
-    "id": 1,
-    "title": "Spring Boot入门教程",
-    "content": "Spring Boot是一个开源的Java框架...",
-    "summary": "Spring Boot入门教程摘要",
-    "coverImage": "https://example.com/image.jpg",
-    "published": true,
-    "viewCount": 0,
-    "likeCount": 0,
-    "createTime": "2023-05-01T12:00:00",
-    "updateTime": "2023-05-01T12:00:00",
-    "author": {
-      "id": 1,
-      "username": "author1",
-      "email": "author1@example.com",
-      "nickname": "作者1",
-      "avatar": null,
-      "enabled": true,
-      "createTime": "2023-05-01T12:00:00",
-      "updateTime": "2023-05-01T12:00:00"
-    }
-  }
-]
-```
-
-**根据分类ID分页获取文章**
-- 请求URL: `GET /api/articles/category/{categoryId}?page=0&size=10`
-- 响应示例:
-```json
-[
-  {
-    "id": 1,
-    "title": "Spring Boot入门教程",
-    "content": "Spring Boot是一个开源的Java框架...",
-    "summary": "Spring Boot入门教程摘要",
-    "coverImage": "https://example.com/image.jpg",
-    "published": true,
-    "viewCount": 0,
-    "likeCount": 0,
-    "createTime": "2023-05-01T12:00:00",
-    "updateTime": "2023-05-01T12:00:00",
-    "author": {
-      "id": 1,
-      "username": "author1",
-      "email": "author1@example.com",
-      "nickname": "作者1",
-      "avatar": null,
-      "enabled": true,
-      "createTime": "2023-05-01T12:00:00",
-      "updateTime": "2023-05-01T12:00:00"
-    }
-  }
-]
-```
-
-**根据标签ID分页获取文章**
-- 请求URL: `GET /api/articles/tag/{tagId}?page=0&size=10`
-- 响应示例:
-```json
-[
-  {
-    "id": 1,
-    "title": "Spring Boot入门教程",
-    "content": "Spring Boot是一个开源的Java框架...",
-    "summary": "Spring Boot入门教程摘要",
-    "coverImage": "https://example.com/image.jpg",
-    "published": true,
-    "viewCount": 0,
-    "likeCount": 0,
-    "createTime": "2023-05-01T12:00:00",
-    "updateTime": "2023-05-01T12:00:00",
-    "author": {
-      "id": 1,
-      "username": "author1",
-      "email": "author1@example.com",
-      "nickname": "作者1",
-      "avatar": null,
-      "enabled": true,
-      "createTime": "2023-05-01T12:00:00",
-      "updateTime": "2023-05-01T12:00:00"
-    }
-  }
-]
-```
-
-**分页获取热门文章**
-- 请求URL: `GET /api/articles/popular?page=0&size=10`
-- 响应示例:
-```json
-[
-  {
-    "id": 1,
-    "title": "Spring Boot入门教程",
-    "content": "Spring Boot是一个开源的Java框架...",
-    "summary": "Spring Boot入门教程摘要",
-    "coverImage": "https://example.com/image.jpg",
-    "published": true,
-    "viewCount": 0,
-    "likeCount": 0,
-    "createTime": "2023-05-01T12:00:00",
-    "updateTime": "2023-05-01T12:00:00",
-    "author": {
-      "id": 1,
-      "username": "author1",
-      "email": "author1@example.com",
-      "nickname": "作者1",
-      "avatar": null,
-      "enabled": true,
-      "createTime": "2023-05-01T12:00:00",
-      "updateTime": "2023-05-01T12:00:00"
-    }
-  }
-]
-```
-
-**获取热门文章Top5**
-- 请求URL: `GET /api/articles/popular/top`
-- 响应示例:
-```json
-[
-  {
-    "id": 1,
-    "title": "Spring Boot入门教程",
-    "content": "Spring Boot是一个开源的Java框架...",
-    "summary": "Spring Boot入门教程摘要",
-    "coverImage": "https://example.com/image.jpg",
-    "published": true,
-    "viewCount": 0,
-    "likeCount": 0,
-    "createTime": "2023-05-01T12:00:00",
-    "updateTime": "2023-05-01T12:00:00",
-    "author": {
-      "id": 1,
-      "username": "author1",
-      "email": "author1@example.com",
-      "nickname": "作者1",
-      "avatar": null,
-      "enabled": true,
-      "createTime": "2023-05-01T12:00:00",
-      "updateTime": "2023-05-01T12:00:00"
-    }
-  }
-]
+  ]
+}
 ```
 
 ## 3. 分类管理API
@@ -478,15 +272,18 @@
 - 请求URL: `GET /api/categories?page=0&size=10`
 - 响应示例:
 ```json
-[
-  {
-    "id": 1,
-    "name": "技术",
-    "description": "技术类文章",
-    "createTime": "2023-05-01T12:00:00",
-    "updateTime": "2023-05-01T12:00:00"
-  }
-]
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "技术",
+      "description": "技术类文章",
+      "createTime": "2023-05-01T12:00:00",
+      "updateTime": "2023-05-01T12:00:00"
+    }
+  ]
+}
 ```
 
 **检查分类名称是否存在**
@@ -578,15 +375,18 @@
 - 请求URL: `GET /api/tags?page=0&size=10`
 - 响应示例:
 ```json
-[
-  {
-    "id": 1,
-    "name": "Spring Boot",
-    "description": "Spring Boot相关文章",
-    "createTime": "2023-05-01T12:00:00",
-    "updateTime": "2023-05-01T12:00:00"
-  }
-]
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Spring Boot",
+      "description": "Spring Boot相关文章",
+      "createTime": "2023-05-01T12:00:00",
+      "updateTime": "2023-05-01T12:00:00"
+    }
+  ]
+}
 ```
 
 **检查标签名称是否存在**
@@ -604,11 +404,8 @@
 |---------|---------|---------|---------|---------|
 | 创建用户 | POST | /api/users | UserDto对象 | UserDto对象 |
 | 根据ID获取用户 | GET | /api/users/{id} | 用户ID | UserDto对象 |
-| 更新用户 | PUT | /api/users/{id} | 用户ID, UserDto对象 | UserDto对象 |
-| 删除用户 | DELETE | /api/users/{id} | 用户ID | 操作结果 |
 | 分页获取用户列表 | GET | /api/users | 分页参数 | 用户列表 |
 | 检查用户名是否存在 | GET | /api/users/exists/username/{username} | 用户名 | Boolean |
-| 检查邮箱是否存在 | GET | /api/users/exists/email/{email} | 邮箱 | Boolean |
 
 ### 用户API详情
 
@@ -626,15 +423,18 @@
 - 响应示例:
 ```json
 {
-  "id": 1,
-  "username": "newuser",
-  "password": null,
-  "email": "newuser@example.com",
-  "nickname": "新用户",
-  "avatar": null,
-  "enabled": true,
-  "createTime": "2023-05-01T12:00:00",
-  "updateTime": "2023-05-01T12:00:00"
+  "success": true,
+  "data": {
+    "id": 1,
+    "username": "newuser",
+    "password": null,
+    "email": "newuser@example.com",
+    "nickname": "新用户",
+    "avatar": null,
+    "enabled": true,
+    "createTime": "2023-05-01T12:00:00",
+    "updateTime": "2023-05-01T12:00:00"
+  }
 }
 ```
 
@@ -643,60 +443,8 @@
 - 响应示例:
 ```json
 {
-  "id": 1,
-  "username": "user1",
-  "password": null,
-  "email": "user1@example.com",
-  "nickname": "用户1",
-  "avatar": null,
-  "enabled": true,
-  "createTime": "2023-05-01T12:00:00",
-  "updateTime": "2023-05-01T12:00:00"
-}
-```
-
-**更新用户**
-- 请求URL: `PUT /api/users/{id}`
-- 请求示例:
-```json
-{
-  "username": "updateduser",
-  "password": "updatedpassword",
-  "email": "updateduser@example.com",
-  "nickname": "更新用户"
-}
-```
-- 响应示例:
-```json
-{
-  "id": 1,
-  "username": "updateduser",
-  "password": null,
-  "email": "updateduser@example.com",
-  "nickname": "更新用户",
-  "avatar": null,
-  "enabled": true,
-  "createTime": "2023-05-01T12:00:00",
-  "updateTime": "2023-05-02T12:00:00"
-}
-```
-
-**删除用户**
-- 请求URL: `DELETE /api/users/{id}`
-- 响应示例:
-```json
-{
   "success": true,
-  "data": null
-}
-```
-
-**分页获取用户列表**
-- 请求URL: `GET /api/users?page=0&size=10`
-- 响应示例:
-```json
-[
-  {
+  "data": {
     "id": 1,
     "username": "user1",
     "password": null,
@@ -707,21 +455,33 @@
     "createTime": "2023-05-01T12:00:00",
     "updateTime": "2023-05-01T12:00:00"
   }
-]
+}
 ```
 
-**检查用户名是否存在**
-- 请求URL: `GET /api/users/exists/username/{username}`
+**分页获取用户列表**
+- 请求URL: `GET /api/users?page=0&size=10`
 - 响应示例:
 ```json
 {
   "success": true,
-  "data": true
+  "data": [
+    {
+      "id": 1,
+      "username": "user1",
+      "password": null,
+      "email": "user1@example.com",
+      "nickname": "用户1",
+      "avatar": null,
+      "enabled": true,
+      "createTime": "2023-05-01T12:00:00",
+      "updateTime": "2023-05-01T12:00:00"
+    }
+  ]
 }
 ```
 
-**检查邮箱是否存在**
-- 请求URL: `GET /api/users/exists/email/{email}`
+**检查用户名是否存在**
+- 请求URL: `GET /api/users/exists/username/{username}`
 - 响应示例:
 ```json
 {
