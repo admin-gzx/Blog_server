@@ -19,21 +19,21 @@ spring:
 
   sql:
     init:
-      mode: embedded
-      schema-locations: classpath:schema.sql
-      data-locations: classpath:data.sql
+      mode: never
+      # schema-locations: classpath:schema.sql
+      # data-locations: classpath:data.sql  # 注释掉，因为项目中没有data.sql文件
 
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
 
 jwt:
-  secret: mySuperSecretKeyForJWTThatIsLongEnoughToBeSecure1234567890
   expiration: 86400
+  secret: your-very-long-and-secure-secret-key-that-should-be-at-least-32-characters
 
 server:
   port: 8080
 
 logging:
   level:
-    com.blog.config.JwtAuthTokenFilter:
+    com.blog.config.JwtAuthTokenFilter: DEBUG

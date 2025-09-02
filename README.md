@@ -43,9 +43,7 @@ Blog_server/
 │   │   │           │   └── impl/
 │   │   │           └── util/
 │   │   └── resources/
-│   │       ├── application.yml
-│   │       ├── data.sql
-│   │       └── schema.sql
+│   │       └── application.yml
 │   └── test/
 │       └── java/
 │           └── com/

@@ -16,7 +16,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * JWT认证过滤器
@@ -34,19 +33,6 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
     /** 日志记录器 */
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
-    
-    /** 定义公开接口路径前缀 */
-    private static final List<String> PUBLIC_PATHS = List.of(
-        "/api/auth/",
-        "/api/test/",
-        "/api/articles/",  // 修改为与ArticleController中一致的前缀
-        "/api/categories/",
-        "/api/tags/",
-        "/api/users/public/",
-        "/api/comments/",
-        "/swagger-ui/",
-        "/v3/api-docs"
-    );
 
     /**
      * 过滤器核心方法，用于处理每个HTTP请求
@@ -61,29 +47,12 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         // 检查请求路径是否为公开接口
         String requestURI = request.getRequestURI();
-        String method = request.getMethod();
-        
-        // 特殊处理文章接口，GET请求公开，POST请求需要认证
-        boolean isPublicPath = false;
-        if (requestURI.startsWith("/api/articles/")) {
-            // 对于文章接口，只有GET请求是公开的
-            isPublicPath = "GET".equals(method);
-        } else {
-            // 其他接口按原有逻辑处理
-            isPublicPath = PUBLIC_PATHS.stream().anyMatch(requestURI::startsWith);
-        }
         
         // 添加调试日志
         logger.debug("Request URI: {}", requestURI);
-        logger.debug("Request Method: {}", method);
-        logger.debug("Is public path: {}", isPublicPath);
         
-        // 如果是公开接口，直接放行
-        if (isPublicPath) {
-            logger.debug("Public path accessed, skipping JWT validation");
-            filterChain.doFilter(request, response);
-            return;
-        }
+        // 让Spring Security处理路径权限，这里只处理需要认证的请求
+        // 如果是公开接口，Spring Security会直接放行，不会执行到这里
         
         try {
             String jwt = parseJwt(request);

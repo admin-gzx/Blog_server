@@ -108,8 +108,6 @@ public class AuthController {
         }
         
         // 创建新用户
-        // 对密码进行加密
-        userDto.setPassword(encoder.encode(userDto.getPassword()));
         UserDto newUser = userService.createUser(userDto);
         
         // 返回注册成功信息

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import jakarta.annotation.PostConstruct;
 
 /**
  * JWT工具类
@@ -20,13 +21,24 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    /** JWT密钥，从配置文件中读取 */
+    /** JWT密钥 */
+    private SecretKey jwtSecret;
+    
+    /** JWT密钥字符串，从配置文件中读取 */
     @Value("${jwt.secret}")
-    private String jwtSecret;
+    private String jwtSecretString;
 
     /** JWT过期时间（秒），从配置文件中读取 */
     @Value("${jwt.expiration}")
     private int jwtExpiration;
+
+    /**
+     * 初始化JWT密钥
+     */
+    @PostConstruct
+    public void init() {
+        jwtSecret = Keys.hmacShaKeyFor(jwtSecretString.getBytes());
+    }
 
     /**
      * 根据认证信息生成JWT令牌
@@ -35,14 +47,12 @@ public class JwtUtils {
      */
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        
-        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpiration * 1000))
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(jwtSecret, SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -52,8 +62,7 @@ public class JwtUtils {
      * @return 用户名
      */
     public String getUserNameFromJwtToken(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getSubject();
+        return Jwts.parser().verifyWith(jwtSecret).build().parseSignedClaims(token).getPayload().getSubject();
     }
 
     /**
@@ -63,8 +72,7 @@ public class JwtUtils {
      */
     public boolean validateJwtToken(String authToken) {
         try {
-            SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(authToken);
+            Jwts.parser().verifyWith(jwtSecret).build().parseSignedClaims(authToken);
             return true;
         } catch (SignatureException e) {
             logger.error("Invalid JWT signature: {}", e.getMessage());
