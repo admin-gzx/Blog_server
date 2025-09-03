@@ -37,6 +37,7 @@ public class TagController {
     @Operation(summary = "创建标签", description = "创建新的标签")
     public ResponseEntity<TagDto> createTag(@Valid @RequestBody TagDto tagDto) {
         TagDto createdTag = tagService.createTag(tagDto);
+        System.out.println(createdTag);
         return ResponseEntity.ok(createdTag);
     }
     
@@ -96,6 +97,7 @@ public class TagController {
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<TagDto> tags = tagService.getAllTags(pageable);
+        System.out.println(tags);
         return ResponseEntity.ok(tags);
     }
     
